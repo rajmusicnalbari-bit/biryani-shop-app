@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FF6B35">
+    <title>Biryani Shop - Daily Entry</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 3px solid #FF6B35;
+            padding-bottom: 10px;
+        }
+        
+        .collection-title {
+            color: #28a745;
+        }
+        
+        .expense-title {
+            color: #dc3545;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #FF6B35;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-collection {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-expense {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+        
+        .entries {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .entry-card {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #FF6B35;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .entry-date {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .entry-amount {
+            font-size: 18px;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+        
+        .entry-details {
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .summary {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .summary-item h3 {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .summary-item p {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .export-btn {
+            background: #17a2b8;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            font-weight: bold;
+        }
+        
+        .no-entries {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍛 Biryani Shop</h1>
+            <p>Daily Sale & Expense Tracker</p>
+        </div>
+        
+        <div class="summary">
+            <div class="summary-item">
+                <h3>Total Collection</h3>
+                <p id="totalCollection">₹0</p>
+            </div>
+            <div class="summary-item">
+                <h3>Total Expenses</h3>
+                <p id="totalExpenses">₹0</p>
+            </div>
+            <div class="summary-item">
+                <h3>Net Profit</h3>
+                <p id="netProfit">₹0</p>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="section">
+                <h2 class="section-title collection-title">💰 Collection Entry</h2>
+                <form id="collectionForm">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="collectionDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <select id="paymentMethod" required>
+                            <option value="CASH">CASH</option>
+                            <option value="UPI">UPI</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount (₹)</label>
+                        <input type="number" id="collectionAmount" placeholder="1200" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity (KG)</label>
+                        <input type="text" id="quantity" placeholder="2 KG" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Dish Name</label>
+                        <input type="text" id="dishName" placeholder="MORADA" required>
+                    </div>
+                    <button type="submit" class="btn btn-collection">Add Collection</button>
+                </form>
+                
+                <div class="entries" id="collectionEntries">
+                    <p class="no-entries">No collections yet</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title expense-title">💸 Expense Entry</h2>
+                <form id="expenseForm">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="expenseDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" id="expenseDescription" placeholder="CHICKEN 2 KG" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount (₹)</label>
+                        <input type="number" id="expenseAmount" placeholder="440" required>
+                    </div>
+                    <button type="submit" class="btn btn-expense">Add Expense</button>
+                </form>
+                
+                <div class="entries" id="expenseEntries">
+                    <p class="no-entries">No expenses yet</p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; padding: 20px;">
+            <button class="export-btn" onclick="exportToExcel()">📊 Export to Excel</button>
+            <button class="export-btn" onclick="clearAllData()">🗑️ Clear All Data</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('collectionDate').valueAsDate = new Date();
+        document.getElementById('expenseDate').valueAsDate = new Date();
+        
+        let collections = JSON.parse(localStorage.getItem('collections')) || [];
+        let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+        
+        document.getElementById('collectionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const collection = {
+                id: Date.now(),
+                date: document.getElementById('collectionDate').value,
+                paymentMethod: document.getElementById('paymentMethod').value,
+                amount: parseFloat(document.getElementById('collectionAmount').value),
+                quantity: document.getElementById('quantity').value,
+                dishName: document.getElementById('dishName').value
+            };
+            
+            collections.push(collection);
+            localStorage.setItem('collections', JSON.stringify(collections));
+            
+            this.reset();
+            document.getElementById('collectionDate').valueAsDate = new Date();
+            renderCollections();
+            updateSummary();
+        });
+        
+        document.getElementById('expenseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const expense = {
+                id: Date.now(),
+                date: document.getElementById('expenseDate').value,
+                description: document.getElementById('expenseDescription').value,
+                amount: parseFloat(document.getElementById('expenseAmount').value)
+            };
+            
+            expenses.push(expense);
+            localStorage.setItem('expenses', JSON.stringify(expenses));
+            
+            this.reset();
+            document.getElementById('expenseDate').valueAsDate = new Date();
+            renderExpenses();
+            updateSummary();
+        });
+        
+        function renderCollections() {
+            const container = document.getElementById('collectionEntries');
+            
+            if (collections.length === 0) {
+                container.innerHTML = '<p class="no-entries">No collections yet</p>';
+                return;
+            }
+            
+            container.innerHTML = collections.map(c => `
+                <div class="entry-card">
+                    <div class="entry-header">
+                        <span class="entry-date">${formatDate(c.date)}</span>
+                        <span class="entry-amount">₹${c.amount}</span>
+                    </div>
+                    <div class="entry-details">
+                        <strong>${c.paymentMethod}</strong> | ${c.quantity} | ${c.dishName}
+                    </div>
+                    <button class="delete-btn" onclick="deleteCollection(${c.id})">Delete</button>
+                </div>
+            `).reverse().join('');
+        }
+        
+        function renderExpenses() {
+            const container = document.getElementById('expenseEntries');
+            
+            if (expenses.length === 0) {
+                container.innerHTML = '<p class="no-entries">No expenses yet</p>';
+                return;
+            }
+            
+            container.innerHTML = expenses.map(e => `
+                <div class="entry-card">
+                    <div class="entry-header">
+                        <span class="entry-date">${formatDate(e.date)}</span>
+                        <span class="entry-amount">₹${e.amount}</span>
+                    </div>
+                    <div class="entry-details">
+                        ${e.description}
+                    </div>
+                    <button class="delete-btn" onclick="deleteExpense(${e.id})">Delete</button>
+                </div>
+            `).reverse().join('');
+        }
+        
+        function updateSummary() {
+            const totalCollection = collections.reduce((sum, c) => sum + c.amount, 0);
+            const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+            const netProfit = totalCollection - totalExpenses;
+            
+            document.getElementById('totalCollection').textContent = `₹${totalCollection}`;
+            document.getElementById('totalExpenses').textContent = `₹${totalExpenses}`;
+            document.getElementById('netProfit').textContent = `₹${netProfit}`;
+            document.getElementById('netProfit').style.color = netProfit >= 0 ? '#28a745' : '#dc3545';
+        }
+        
+        function deleteCollection(id) {
+            if (confirm('Delete this collection entry?')) {
+                collections = collections.filter(c => c.id !== id);
+                localStorage.setItem('collections', JSON.stringify(collections));
+                renderCollections();
+                updateSummary();
+            }
+        }
+        
+        function deleteExpense(id) {
+            if (confirm('Delete this expense entry?')) {
+                expenses = expenses.filter(e => e.id !== id);
+                localStorage.setItem('expenses', JSON.stringify(expenses));
+                renderExpenses();
+                updateSummary();
+            }
+        }
+        
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-IN', { 
+                weekday: 'short', 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+        
+        function exportToExcel() {
+            let csv = 'COLLECTIONS\n';
+            csv += 'Date,Payment Method,Amount,Quantity,Dish Name\n';
+            collections.forEach(c => {
+                csv += `${c.date},${c.paymentMethod},${c.amount},${c.quantity},${c.dishName}\n`;
+            });
+            
+            csv += '\n\nEXPENSES\n';
+            csv += 'Date,Description,Amount\n';
+            expenses.forEach(e => {
+                csv += `${e.date},${e.description},${e.amount}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `biryani-shop-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+        }
+        
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone!')) {
+                localStorage.clear();
+                collections = [];
+                expenses = [];
+                renderCollections();
+                renderExpenses();
+                updateSummary();
+            }
+        }
+        
+        renderCollections();
+        renderExpenses();
+        updateSummary();
+    </script>
+</body>
+</html>
